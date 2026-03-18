@@ -4,84 +4,91 @@ using System.Collections.Generic;
 
 namespace TextEditorApp {
   public class FileIndexer {
-    private string indexDirectory;
-    private List<string> indexedFiles;
+    private string _indexDirectory;
+    private List<string> _indexedFiles;
 
-    private int maxIndexedFiles;
-    private int initialCount;
-    private int fileNumberOffset;
+    private int _maxIndexedFiles;
+    private int _initialCount;
+    private int _fileNumberOffset;
 
     public FileIndexer()
     {
-      indexDirectory = ".";
-      indexedFiles = new List<string>();
+      _indexDirectory = ".";
+      _indexedFiles = new List<string>();
 
-      maxIndexedFiles = 1000;
-      initialCount = 0;
-      fileNumberOffset = 1;
+      _maxIndexedFiles = 1000;
+      _initialCount = 0;
+      _fileNumberOffset = 1;
     }
 
     public FileIndexer(string directory)
     {
-      indexDirectory = directory;
-      indexedFiles = new List<string>();
+      _indexDirectory = directory;
+      _indexedFiles = new List<string>();
 
-      maxIndexedFiles = 1000;
-      initialCount = 0;
-      fileNumberOffset = 1;
+      _maxIndexedFiles = 1000;
+      _initialCount = 0;
+      _fileNumberOffset = 1;
     }
 
     public void SetIndexDirectory(string directory)
     {
-      indexDirectory = directory;
+      _indexDirectory = directory;
     }
 
     public string GetIndexDirectory()
     {
-      return indexDirectory;
+      return _indexDirectory;
     }
 
     public void IndexFilesByKeywords(string[] keywords, int keywordCount)
     {
-      indexedFiles.Clear();
+      int fileCounter;
+      string filePath;
+      string extension;
+      string content;
+      string[] allFiles;
+      bool fileMatches;
 
-      Console.WriteLine("Indexing files in: " + indexDirectory);
+      _indexedFiles.Clear();
+
+      Console.WriteLine("Indexing files in: " + _indexDirectory);
       Console.Write("Keywords: ");
 
-      for (int keywordIndex = 0; keywordIndex < keywordCount; keywordIndex++)
+      for (int keywordIndex = 0; keywordIndex < keywordCount; ++keywordIndex)
       {
         Console.Write(keywords[keywordIndex]);
 
-        if (keywordIndex < keywordCount - 1)
+        if (keywordIndex < --keywordCount)
         {
           Console.Write(", ");
         }
       }
       Console.WriteLine();
 
-      string[] allFiles = Directory.GetFiles(indexDirectory, "*.*", SearchOption.AllDirectories);
+      allFiles = Directory.GetFiles(_indexDirectory, "*.*", SearchOption.AllDirectories);
 
-      int fileCounter = 0;
+      fileCounter = 0;
 
-      for (int fileIndex = 0; fileIndex < allFiles.Length; fileIndex++)
+      for (int fileIndex = 0; fileIndex < allFiles.Length; ++fileIndex)
       {
-        if (fileCounter >= maxIndexedFiles)
+        if (fileCounter >= _maxIndexedFiles)
         {
           break;
         }
 
-        string filePath = allFiles[fileIndex];
-        string extension = Path.GetExtension(filePath).ToLower();
+        filePath = allFiles[fileIndex];
+        extension = Path.GetExtension(filePath).ToLower();
 
         if (extension == ".txt" || extension == ".cs" || extension == ".xml")
         {
           using (StreamReader reader = new StreamReader(filePath))
           {
-            string content = reader.ReadToEnd();
+            content = reader.ReadToEnd();
 
-            bool fileMatches = false;
+            fileMatches = false;
 
-            for (int keywordIndex = 0; keywordIndex < keywordCount; keywordIndex++)
+            for (int keywordIndex = 0; keywordIndex < keywordCount; ++keywordIndex)
             {
               if (content.Contains(keywords[keywordIndex]))
               {
@@ -92,31 +99,31 @@ namespace TextEditorApp {
 
             if (fileMatches)
             {
-              indexedFiles.Add(filePath);
+              _indexedFiles.Add(filePath);
               Console.WriteLine("  Found: " + filePath);
             }
           }
         }
 
-        fileCounter++;
+        ++fileCounter;
       }
 
-      Console.WriteLine("Indexing complete. Files found: " + indexedFiles.Count);
+      Console.WriteLine("Indexing complete. Files found: " + _indexedFiles.Count);
     }
 
     public void PrintIndexedFiles()
     {
-      if (indexedFiles.Count == initialCount)
+      if (_indexedFiles.Count == _initialCount)
       {
         Console.WriteLine("No indexed files");
         return;
       }
 
-      Console.WriteLine("Indexed files: " + indexedFiles.Count);
+      Console.WriteLine("Indexed files: " + _indexedFiles.Count);
 
-      for (int fileIndex = 0; fileIndex < indexedFiles.Count; fileIndex++)
+      for (int fileIndex = 0; fileIndex < _indexedFiles.Count; ++fileIndex)
       {
-        Console.WriteLine("  " + (fileIndex + fileNumberOffset) + ". " + indexedFiles[fileIndex]);
+        Console.WriteLine("  " + (fileIndex + _fileNumberOffset) + ". " + _indexedFiles[fileIndex]);
       }
     }
 
@@ -124,12 +131,12 @@ namespace TextEditorApp {
     {
       using (StreamWriter outputFile = new StreamWriter(outputFilePath))
       {
-        outputFile.WriteLine("Indexing results for: " + indexDirectory);
-        outputFile.WriteLine("Files found: " + indexedFiles.Count);
+        outputFile.WriteLine("Indexing results for: " + _indexDirectory);
+        outputFile.WriteLine("Files found: " + _indexedFiles.Count);
 
-        for (int fileIndex = 0; fileIndex < indexedFiles.Count; fileIndex++)
+        for (int fileIndex = 0; fileIndex < _indexedFiles.Count; ++fileIndex)
         {
-          outputFile.WriteLine((fileIndex + fileNumberOffset) + ". " + indexedFiles[fileIndex]);
+          outputFile.WriteLine((fileIndex + _fileNumberOffset) + ". " + _indexedFiles[fileIndex]);
         }
       }
 
@@ -139,7 +146,7 @@ namespace TextEditorApp {
 
     public List<string> GetIndexedFiles()
     {
-      return indexedFiles;
+      return _indexedFiles;
     }
   }
 }

@@ -3,69 +3,72 @@ using System.Collections.Generic;
 
 namespace TextEditorApp {
   public class TextEditor {
-    private TextFile currentFile;
-    private List<TextMemento> historyList;
-    private int currentStateIndex;
-    private int maxHistorySize;
-    private int shiftIndex;
-    private int zeroValue;
-    private int emptyStateIndex;
+    private TextFile _currentFile;
+    private List<TextMemento> _historyList;
+    private int _currentStateIndex;
+    private int _maxHistorySize;
+    private int _shiftIndex;
+    private int _zeroValue;
+    private int _emptyStateIndex;
+    private int _undoStep;
 
     public TextEditor()
     {
-      currentFile = new TextFile();
-      historyList = new List<TextMemento>();
+      _currentFile = new TextFile();
+      _historyList = new List<TextMemento>();
 
-      maxHistorySize = 10;
-      shiftIndex = 1;
-      zeroValue = 0;
-      emptyStateIndex = -1;
+      _maxHistorySize = 10;
+      _shiftIndex = 1;
+      _zeroValue = 0;
+      _emptyStateIndex = -1;
+      _undoStep = 1;
 
-      currentStateIndex = emptyStateIndex;
+      _currentStateIndex = _emptyStateIndex;
     }
 
     public void CreateNewFile(string path)
     {
-      currentFile.SetFilePath(path);           
-      currentFile.SetFileContent("");        
+      _currentFile.SetFilePath(path);
+      _currentFile.SetFileContent("");
       SaveToHistory();
       Console.WriteLine("New file created: " + path);
     }
 
     public void SaveToHistory()
     {
-      TextMemento newMemento = new TextMemento(
-        currentFile.GetFileContent(),             
-        currentFile.GetFilePath()               
+      TextMemento newMemento;
+      newMemento = new TextMemento(
+        _currentFile.GetFileContent(),
+        _currentFile.GetFilePath()
       );
-      historyList.Add(newMemento);
+      _historyList.Add(newMemento);
 
-      if (historyList.Count > maxHistorySize)
+      if (_historyList.Count > _maxHistorySize)
       {
-        historyList.RemoveAt(0);
+        _historyList.RemoveAt(0);
       }
 
-      currentStateIndex = historyList.Count - shiftIndex;
-      Console.WriteLine("State saved. History size: " + historyList.Count);
+      _currentStateIndex = _historyList.Count - _shiftIndex;
+      Console.WriteLine("State saved. History size: " + _historyList.Count);
     }
 
     public bool Undo()
     {
-      if (currentStateIndex <= zeroValue)
+      TextMemento previousState;
+
+      if (_currentStateIndex <= _zeroValue)
       {
         Console.WriteLine("No states available for undo");
         return false;
       }
 
-      TextMemento previousState;
-
-      currentStateIndex = currentStateIndex - 1;
-      previousState = historyList[currentStateIndex];
+      _currentStateIndex = _currentStateIndex - _undoStep;
+      previousState = _historyList[_currentStateIndex];
 
       if (previousState != null)
       {
-        currentFile.SetFileContent(previousState.GetSavedContent());  
-        currentFile.SetFilePath(previousState.GetSavedFilePath());    
+        _currentFile.SetFileContent(previousState.GetSavedContent());
+        _currentFile.SetFilePath(previousState.GetSavedFilePath());
         Console.WriteLine("Undo performed");
         return true;
       }
@@ -94,7 +97,7 @@ namespace TextEditorApp {
         newContent = newContent + inputLine + Environment.NewLine;
       }
 
-      currentFile.SetFileContent(newContent);  
+      _currentFile.SetFileContent(newContent);
       SaveToHistory();
       Console.WriteLine("Content updated");
     }
@@ -102,15 +105,15 @@ namespace TextEditorApp {
     public bool SaveAsXml()
     {
       string xmlPath;
-      xmlPath = currentFile.GetFilePath() + ".xml";   
-      return currentFile.SaveToXml(xmlPath);
+      xmlPath = _currentFile.GetFilePath() + ".xml";
+      return _currentFile.SaveToXml(xmlPath);
     }
 
     public bool SaveAsBinary()
     {
       string binaryPath;
-      binaryPath = currentFile.GetFilePath() + ".bin";  
-      return currentFile.SaveToBinary(binaryPath);
+      binaryPath = _currentFile.GetFilePath() + ".bin";
+      return _currentFile.SaveToBinary(binaryPath);
     }
 
     public bool LoadFromXml(string xmlPath)
@@ -123,7 +126,7 @@ namespace TextEditorApp {
 
       if (loadResult)
       {
-        currentFile = loadedFile;
+        _currentFile = loadedFile;
         SaveToHistory();
         Console.WriteLine("File loaded from XML");
       }
@@ -141,7 +144,7 @@ namespace TextEditorApp {
 
       if (loadResult)
       {
-        currentFile = loadedFile;
+        _currentFile = loadedFile;
         SaveToHistory();
         Console.WriteLine("File loaded from binary file");
       }

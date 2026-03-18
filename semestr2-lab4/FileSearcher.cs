@@ -4,60 +4,60 @@ using System.Collections.Generic;
 
 namespace TextEditorApp {
   public class FileSearcher {
-    private string searchDirectory;
-    private List<string> foundFiles;
+    private string _searchDirectory;
+    private List<string> _foundFiles;
 
-    private int MaxFoundFiles;
-    private int InitialCount;
-    private int FileNumberOffset;
+    private int _maxFoundFiles;
+    private int _initialCount;
+    private int _fileNumberOffset;
 
     public FileSearcher()
     {
-      searchDirectory = ".";
-      foundFiles = new List<string>();
+      _searchDirectory = ".";
+      _foundFiles = new List<string>();
 
-      MaxFoundFiles = 1000;
-      InitialCount = 0;
-      FileNumberOffset = 1;
+      _maxFoundFiles = 1000;
+      _initialCount = 0;
+      _fileNumberOffset = 1;
     }
 
     public FileSearcher(string directory)
     {
-      searchDirectory = directory;
-      foundFiles = new List<string>();
+      _searchDirectory = directory;
+      _foundFiles = new List<string>();
 
-      MaxFoundFiles = 1000;
-      InitialCount = 0;
-      FileNumberOffset = 1;
+      _maxFoundFiles = 1000;
+      _initialCount = 0;
+      _fileNumberOffset = 1;
     }
 
     public void SetSearchDirectory(string directory)
     {
-      searchDirectory = directory;
+      _searchDirectory = directory;
     }
 
     public string GetSearchDirectory()
     {
-      return searchDirectory;
+      return _searchDirectory;
     }
 
     public void SearchByName(string keyword)
     {
-      foundFiles.Clear();
-
       string[] files;
       int fileCounter;
       string filePath;
       string fileName;
 
-      files = Directory.GetFiles(searchDirectory);
+      _foundFiles.Clear();
+
+      files = Directory.GetFiles(_searchDirectory);
       fileCounter = 0;
 
       if (files != null)
       {
-        for (int fileIndex = 0; fileIndex < files.Length; fileIndex++)
+        for (int fileIndex = 0; fileIndex < files.Length; ++fileIndex)
         {
-          if (fileCounter >= MaxFoundFiles)
+          if (fileCounter >= _maxFoundFiles)
           {
             break;
           }
@@ -67,32 +67,32 @@ namespace TextEditorApp {
 
           if (fileName.IndexOf(keyword) >= 0)
           {
-            foundFiles.Add(filePath);
+            _foundFiles.Add(filePath);
           }
 
-          fileCounter++;
+          ++fileCounter;
         }
       }
     }
 
     public void SearchInContent(string keyword)
     {
-      foundFiles.Clear();
-
       string[] files;
       int fileCounter;
       string filePath;
       string extension;
       string content;
 
-      files = Directory.GetFiles(searchDirectory);
+      _foundFiles.Clear();
+
+      files = Directory.GetFiles(_searchDirectory);
       fileCounter = 0;
 
       if (files != null)
       {
         for (int fileIndex = 0; fileIndex < files.Length; fileIndex++)
         {
-          if (fileCounter >= MaxFoundFiles)
+          if (fileCounter >= _maxFoundFiles)
           {
             break;
           }
@@ -106,7 +106,7 @@ namespace TextEditorApp {
 
             if (content.IndexOf(keyword) >= 0)
             {
-              foundFiles.Add(filePath);
+              _foundFiles.Add(filePath);
             }
           }
 
@@ -117,23 +117,23 @@ namespace TextEditorApp {
 
     public void PrintFoundFiles()
     {
-      if (foundFiles.Count == InitialCount)
+      if (_foundFiles.Count == _initialCount)
       {
         Console.WriteLine("No files found");
         return;
       }
 
-      Console.WriteLine("Found files: " + foundFiles.Count);
+      Console.WriteLine("Found files: " + _foundFiles.Count);
 
-      for (int fileIndex = 0; fileIndex < foundFiles.Count; fileIndex++)
+      for (int fileIndex = 0; fileIndex < _foundFiles.Count; ++fileIndex)
       {
-        Console.WriteLine("  " + (fileIndex + FileNumberOffset) + ". " + foundFiles[fileIndex]);
+        Console.WriteLine("  " + (fileIndex + _fileNumberOffset) + ". " + _foundFiles[fileIndex]);
       }
     }
 
     public List<string> GetFoundFiles()
     {
-      return foundFiles;
+      return _foundFiles;
     }
   }
 }

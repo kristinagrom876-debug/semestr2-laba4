@@ -2,23 +2,23 @@
 
 namespace TextEditorApp {
   public class TextMemento {
-    private string savedContent;
-    private string savedFilePath;
+    private string _savedContent;
+    private string _savedFilePath;
 
     public TextMemento(string content, string path)
     {
-      savedContent = content;
-      savedFilePath = path;
+      _savedContent = content;
+      _savedFilePath = path;
     }
 
     public string GetSavedContent()
     {
-      return savedContent;
+      return _savedContent;
     }
 
     public string GetSavedFilePath()
     {
-      return savedFilePath;
+      return _savedFilePath;
     }
   }
 }

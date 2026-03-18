@@ -2,18 +2,20 @@
 
 namespace TextEditorApp {
   public class Program {
-    private int maxKeywords;
-    private int initialKeywordCount;
-    private int editFileChoice;
-    private int undoChoice;
-    private int saveAsXmlChoice;
-    private int saveAsBinaryChoice;
-    private int loadFromXmlChoice;
-    private int loadFromBinaryChoice;
-    private int searchFilesChoice;
-    private int indexFilesChoice;
-    private int exitChoice;
-    private int yesChoice;
+    private int _maxKeywords;
+    private int _initialKeywordCount;
+    private int _editFileChoice;
+    private int _undoChoice;
+    private int _saveAsXmlChoice;
+    private int _saveAsBinaryChoice;
+    private int _loadFromXmlChoice;
+    private int _loadFromBinaryChoice;
+    private int _searchFilesChoice;
+    private int _indexFilesChoice;
+    private int _exitChoice;
+    private int _yesChoice;
+    private int _searchByNameChoice;
+    private int _keywordNumberOffset;
 
     public static void Main(string[] args)
     {
@@ -23,18 +25,20 @@ namespace TextEditorApp {
 
     public void Start()
     {
-      maxKeywords = 10;
-      initialKeywordCount = 0;
-      editFileChoice = 1;
-      undoChoice = 2;
-      saveAsXmlChoice = 3;
-      saveAsBinaryChoice = 4;
-      loadFromXmlChoice = 5;
-      loadFromBinaryChoice = 6;
-      searchFilesChoice = 7;
-      indexFilesChoice = 8;
-      exitChoice = 0;
-      yesChoice = 1;
+      _maxKeywords = 10;
+      _initialKeywordCount = 0;
+      _editFileChoice = 1;
+      _undoChoice = 2;
+      _saveAsXmlChoice = 3;
+      _saveAsBinaryChoice = 4;
+      _loadFromXmlChoice = 5;
+      _loadFromBinaryChoice = 6;
+      _searchFilesChoice = 7;
+      _indexFilesChoice = 8;
+      _exitChoice = 0;
+      _yesChoice = 1;
+      _searchByNameChoice = 1;
+      _keywordNumberOffset = 1;
 
       TextEditor editor = new TextEditor();
       FileSearcher searcher = new FileSearcher();
@@ -42,10 +46,13 @@ namespace TextEditorApp {
 
       string filePath;
       string searchKeyword;
-      string[] keywordsForIndex = new string[maxKeywords];
+      string[] keywordsForIndex = new string[_maxKeywords];
       int keywordCount;
       int userChoice;
+      int saveChoice;
+      int searchType;
       bool programRunning;
+      bool saveResult;
 
       programRunning = true;
 
@@ -76,52 +83,52 @@ namespace TextEditorApp {
 
         userChoice = int.Parse(Console.ReadLine());
 
-        if (userChoice == editFileChoice)
+        if (userChoice == _editFileChoice)
         {
           editor.EditContent();
         }
-        else if (userChoice == undoChoice)
+        else if (userChoice == _undoChoice)
         {
           editor.Undo();
         }
-        else if (userChoice == saveAsXmlChoice)
+        else if (userChoice == _saveAsXmlChoice)
         {
-          bool saveResult = editor.SaveAsXml();
+          saveResult = editor.SaveAsXml();
 
           if (saveResult)
           {
             Console.WriteLine("File saved as XML");
           }
         }
-        else if (userChoice == saveAsBinaryChoice)
+        else if (userChoice == _saveAsBinaryChoice)
         {
-          bool saveResult = editor.SaveAsBinary();
+          saveResult = editor.SaveAsBinary();
 
           if (saveResult)
           {
             Console.WriteLine("File saved as binary");
           }
         }
-        else if (userChoice == loadFromXmlChoice)
+        else if (userChoice == _loadFromXmlChoice)
         {
           Console.Write("Enter XML file path to load: ");
           filePath = Console.ReadLine();
 
           editor.LoadFromXml(filePath);
         }
-        else if (userChoice == loadFromBinaryChoice)
+        else if (userChoice == _loadFromBinaryChoice)
         {
           Console.Write("Enter binary file path to load: ");
           filePath = Console.ReadLine();
 
           editor.LoadFromBinary(filePath);
         }
-        else if (userChoice == searchFilesChoice)
+        else if (userChoice == _searchFilesChoice)
         {
           Console.Write("Enter directory to search in: ");
           filePath = Console.ReadLine();
 
-          searcher.SetSearchDirectory(filePath); 
+          searcher.SetSearchDirectory(filePath);
 
           Console.Write("Enter keyword to search: ");
           searchKeyword = Console.ReadLine();
@@ -131,9 +138,9 @@ namespace TextEditorApp {
           Console.WriteLine("2. Search in file content");
           Console.Write("Choice: ");
 
-          int searchType = int.Parse(Console.ReadLine());
+          searchType = int.Parse(Console.ReadLine());
 
-          if (searchType == 1)
+          if (searchType == _searchByNameChoice)
           {
             searcher.SearchByName(searchKeyword);
           }
@@ -144,19 +151,19 @@ namespace TextEditorApp {
 
           searcher.PrintFoundFiles();
         }
-        else if (userChoice == indexFilesChoice)
+        else if (userChoice == _indexFilesChoice)
         {
           Console.Write("Enter directory to index: ");
           filePath = Console.ReadLine();
           indexer.SetIndexDirectory(filePath);
 
-          keywordCount = initialKeywordCount;
+          keywordCount = _initialKeywordCount;
 
           Console.WriteLine("Enter keywords for indexing (enter empty line to finish):");
 
-          while (keywordCount < maxKeywords)
+          while (keywordCount < _maxKeywords)
           {
-            Console.Write("    Keyword " + (keywordCount + 1) + ": ");
+            Console.Write("    Keyword " + (keywordCount + _keywordNumberOffset) + ": ");
             searchKeyword = Console.ReadLine();
 
             if (searchKeyword == string.Empty)
@@ -165,17 +172,17 @@ namespace TextEditorApp {
             }
 
             keywordsForIndex[keywordCount] = searchKeyword;
-            keywordCount++;
+            ++keywordCount;
           }
 
-          if (keywordCount > initialKeywordCount)
+          if (keywordCount > _initialKeywordCount)
           {
             indexer.IndexFilesByKeywords(keywordsForIndex, keywordCount);
 
             Console.Write("Save results to file? (1 - yes, 0 - no): ");
-            int saveChoice = int.Parse(Console.ReadLine());
+            saveChoice = int.Parse(Console.ReadLine());
 
-            if (saveChoice == yesChoice)
+            if (saveChoice == _yesChoice)
             {
               Console.Write("Enter filename for results: ");
               filePath = Console.ReadLine();
@@ -187,7 +194,7 @@ namespace TextEditorApp {
             Console.WriteLine("No keywords specified");
           }
         }
-        else if (userChoice == exitChoice)
+        else if (userChoice == _exitChoice)
         {
           programRunning = false;
           Console.WriteLine("Program finished");

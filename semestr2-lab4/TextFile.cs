@@ -4,64 +4,64 @@ using System.Xml;
 
 namespace TextEditorApp {
   public class TextFile {
-    private string filePath;
-    private string fileContent;
-    private int maxFileSize;
-    private int zeroValue;
+    private string _filePath;
+    private string _fileContent;
+    private int _maxFileSize;
+    private int _zeroValue;
 
     public TextFile()
     {
-      filePath = string.Empty;
-      fileContent = string.Empty;
-      maxFileSize = 1000000;
-      zeroValue = 0;
+      _filePath = string.Empty;
+      _fileContent = string.Empty;
+      _maxFileSize = 1000000;
+      _zeroValue = 0;
     }
 
     public TextFile(string path)
     {
-      filePath = path;
-      fileContent = string.Empty;
-      maxFileSize = 1000000;
-      zeroValue = 0;
+      _filePath = path;
+      _fileContent = string.Empty;
+      _maxFileSize = 1000000;
+      _zeroValue = 0;
     }
 
     public void SetFilePath(string path)
     {
-      filePath = path;
+      _filePath = path;
     }
 
     public string GetFilePath()
     {
-      return filePath;
+      return _filePath;
     }
 
     public void SetFileContent(string content)
     {
-      fileContent = content;
+      _fileContent = content;
     }
 
     public string GetFileContent()
     {
-      return fileContent;
+      return _fileContent;
     }
 
     public bool LoadFromTextFile()
     {
-      if (filePath == string.Empty)
+      if (_filePath == string.Empty)
       {
         Console.WriteLine("Error: file path not set");
         return false;
       }
 
-      if (File.Exists(filePath) == false)
+      if (File.Exists(_filePath) == false)
       {
         Console.WriteLine("Error: file does not exist");
         return false;
       }
 
       StreamReader reader;
-      reader = new StreamReader(filePath);
-      fileContent = reader.ReadToEnd();
+      reader = new StreamReader(_filePath);
+      _fileContent = reader.ReadToEnd();
       reader.Close();
 
       return true;
@@ -69,15 +69,15 @@ namespace TextEditorApp {
 
     public bool SaveToTextFile()
     {
-      if (filePath == string.Empty)
+      if (_filePath == string.Empty)
       {
         Console.WriteLine("Error: file path not set");
         return false;
       }
 
       StreamWriter writer;
-      writer = new StreamWriter(filePath);
-      writer.Write(fileContent);
+      writer = new StreamWriter(_filePath);
+      writer.Write(_fileContent);
       writer.Close();
 
       return true;
@@ -98,7 +98,7 @@ namespace TextEditorApp {
       xmlDocument.AppendChild(documentElement);
 
       contentElement = xmlDocument.CreateElement("content");
-      contentElement.InnerText = fileContent;
+      contentElement.InnerText = _fileContent;
       documentElement.AppendChild(contentElement);
 
       xmlDocument.Save(xmlFilePath);
@@ -124,7 +124,7 @@ namespace TextEditorApp {
 
       if (contentNode != null)
       {
-        fileContent = contentNode.InnerText;
+        _fileContent = contentNode.InnerText;
         return true;
       }
 
@@ -133,16 +133,16 @@ namespace TextEditorApp {
 
     public bool SaveToBinary(string binaryFilePath)
     {
-      BinaryWriter binaryWriter;
       FileStream fileStream;
+      BinaryWriter binaryWriter;
       int contentLength;
 
       fileStream = File.Open(binaryFilePath, FileMode.Create);
       binaryWriter = new BinaryWriter(fileStream);
 
-      contentLength = fileContent.Length;
+      contentLength = _fileContent.Length;
       binaryWriter.Write(contentLength);
-      binaryWriter.Write(fileContent);
+      binaryWriter.Write(_fileContent);
 
       binaryWriter.Close();
       fileStream.Close();
@@ -152,8 +152,8 @@ namespace TextEditorApp {
 
     public bool LoadFromBinary(string binaryFilePath)
     {
-      BinaryReader binaryReader;
       FileStream fileStream;
+      BinaryReader binaryReader;
       int contentLength;
 
       if (File.Exists(binaryFilePath) == false)
@@ -167,7 +167,7 @@ namespace TextEditorApp {
 
       contentLength = binaryReader.ReadInt32();
 
-      if (contentLength <= zeroValue)
+      if (contentLength <= _zeroValue)
       {
         Console.WriteLine("Error: invalid content length");
         binaryReader.Close();
@@ -175,7 +175,7 @@ namespace TextEditorApp {
         return false;
       }
 
-      if (contentLength > maxFileSize)
+      if (contentLength > _maxFileSize)
       {
         Console.WriteLine("Error: file too large");
         binaryReader.Close();
@@ -183,7 +183,7 @@ namespace TextEditorApp {
         return false;
       }
 
-      fileContent = binaryReader.ReadString();
+      _fileContent = binaryReader.ReadString();
       binaryReader.Close();
       fileStream.Close();
 
