@@ -49,17 +49,20 @@ namespace TextEditorApp {
       string content;
       string[] allFiles;
       bool fileMatches;
+      int lastKeywordOffset;
 
       _indexedFiles.Clear();
 
       Console.WriteLine("Indexing files in: " + _indexDirectory);
       Console.Write("Keywords: ");
 
+      lastKeywordOffset = 1;
+
       for (int keywordIndex = 0; keywordIndex < keywordCount; ++keywordIndex)
       {
         Console.Write(keywords[keywordIndex]);
 
-        if (keywordIndex < --keywordCount)
+        if (keywordIndex < keywordCount - lastKeywordOffset)
         {
           Console.Write(", ");
         }
