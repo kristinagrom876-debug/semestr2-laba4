@@ -19,7 +19,8 @@ namespace TextEditorApp {
 
     public static void Main(string[] args)
     {
-      Program program = new Program();
+      Program program;
+      program = new Program();
       program.Start();
     }
 
@@ -40,13 +41,17 @@ namespace TextEditorApp {
       _searchByNameChoice = 1;
       _keywordNumberOffset = 1;
 
-      TextEditor editor = new TextEditor();
-      FileSearcher searcher = new FileSearcher();
-      FileIndexer indexer = new FileIndexer();
+      TextEditor editor;
+      FileSearcher searcher;
+      FileIndexer indexer;
+
+      editor = new TextEditor();
+      searcher = new FileSearcher();
+      indexer = new FileIndexer();
 
       string filePath;
       string searchKeyword;
-      string[] keywordsForIndex = new string[_maxKeywords];
+      string[] keywordsForIndex;
       int keywordCount;
       int userChoice;
       int saveChoice;
@@ -54,6 +59,7 @@ namespace TextEditorApp {
       bool programRunning;
       bool saveResult;
 
+      keywordsForIndex = new string[_maxKeywords];
       programRunning = true;
 
       Console.WriteLine();

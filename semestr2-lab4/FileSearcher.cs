@@ -90,7 +90,7 @@ namespace TextEditorApp {
 
       if (files != null)
       {
-        for (int fileIndex = 0; fileIndex < files.Length; fileIndex++)
+        for (int fileIndex = 0; fileIndex < files.Length; ++fileIndex)
         {
           if (fileCounter >= _maxFoundFiles)
           {
@@ -110,7 +110,7 @@ namespace TextEditorApp {
             }
           }
 
-          fileCounter++;
+          ++fileCounter;
         }
       }
     }
