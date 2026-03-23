@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 namespace TextEditorApp {
-  public class TextEditor {
+  public class TextEditor : IOriginator {
     private TextFile _currentFile;
     private List<TextMemento> _historyList;
     private int _currentStateIndex;
@@ -150,6 +150,25 @@ namespace TextEditorApp {
       }
 
       return loadResult;
+    }
+
+    public object GetMemento()
+    {
+      return new TextMemento
+      {
+        Content = _currentFile.GetFileContent(),
+        FilePath = _currentFile.GetFilePath()
+      };
+    }
+
+    public void SetMemento(object memento)
+    {
+      if (memento is TextMemento)
+      {
+        var mem = memento as TextMemento;
+        _currentFile.SetFileContent(mem.Content);
+        _currentFile.SetFilePath(mem.FilePath);
+      }
     }
   }
 }

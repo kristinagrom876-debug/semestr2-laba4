@@ -16,6 +16,7 @@ namespace TextEditorApp {
     private int _yesChoice;
     private int _searchByNameChoice;
     private int _keywordNumberOffset;
+    private int _mementoDemoChoice;
 
     public static void Main(string[] args)
     {
@@ -40,6 +41,7 @@ namespace TextEditorApp {
       _yesChoice = 1;
       _searchByNameChoice = 1;
       _keywordNumberOffset = 1;
+      _mementoDemoChoice = 9;
 
       TextEditor editor;
       FileSearcher searcher;
@@ -77,13 +79,14 @@ namespace TextEditorApp {
         Console.WriteLine();
         Console.WriteLine("MENU:");
         Console.WriteLine("1. Edit file content");
-        Console.WriteLine("2. Undo changes (Memento pattern)");
+        Console.WriteLine("2. Undo changes");
         Console.WriteLine("3. Save as XML (serialization)");
         Console.WriteLine("4. Save as binary (serialization)");
         Console.WriteLine("5. Load from XML (deserialization)");
         Console.WriteLine("6. Load from binary (deserialization)");
         Console.WriteLine("7. Search files by keyword");
         Console.WriteLine("8. Index files in directory");
+        Console.WriteLine("9. Demo Memento pattern (save and restore state)");
         Console.WriteLine("0. Exit");
         Console.Write("Choice: ");
 
@@ -199,6 +202,28 @@ namespace TextEditorApp {
           {
             Console.WriteLine("No keywords specified");
           }
+        }
+        else if (userChoice == _mementoDemoChoice)
+        {
+          Caretaker caretaker = new Caretaker();
+
+          Console.WriteLine("\n--- Memento Pattern Demo ---");
+
+          Console.WriteLine("Current file content:");
+          Console.WriteLine(editor.GetMemento());
+
+          Console.WriteLine("\nSaving current state...");
+          caretaker.SaveState(editor);
+
+          Console.WriteLine("\nMaking changes to the file...");
+          editor.EditContent();
+
+          Console.WriteLine("\nRestoring saved state...");
+          caretaker.RestoreState(editor);
+
+          Console.WriteLine("\nState restored successfully!");
+          Console.WriteLine("Restored content:");
+          Console.WriteLine(editor.GetMemento());
         }
         else if (userChoice == _exitChoice)
         {

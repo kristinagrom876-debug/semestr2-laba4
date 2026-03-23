@@ -2,23 +2,55 @@
 
 namespace TextEditorApp {
   public class TextMemento {
-    private string _savedContent;
-    private string _savedFilePath;
+    public string Content { get; set; }
+    public string FilePath { get; set; }
+
+    public TextMemento()
+    {
+    }
 
     public TextMemento(string content, string path)
     {
-      _savedContent = content;
-      _savedFilePath = path;
+      Content = content;
+      FilePath = path;
     }
 
     public string GetSavedContent()
     {
-      return _savedContent;
+      return Content;
     }
 
     public string GetSavedFilePath()
     {
-      return _savedFilePath;
+      return FilePath;
+    }
+  }
+
+  public interface IOriginator {
+    object GetMemento();
+    void SetMemento(object memento);
+  }
+
+  public class Caretaker {
+    private object memento;
+
+    public void SaveState(IOriginator originator)
+    {
+      memento = originator.GetMemento();
+      Console.WriteLine("State saved!");
+    }
+
+    public void RestoreState(IOriginator originator)
+    {
+      if (memento != null)
+      {
+        originator.SetMemento(memento);
+        Console.WriteLine("State restored!");
+      }
+      else
+      {
+        Console.WriteLine("No saved state available!");
+      }
     }
   }
 }
